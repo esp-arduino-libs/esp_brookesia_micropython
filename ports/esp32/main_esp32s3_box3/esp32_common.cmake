@@ -25,7 +25,6 @@ if(NOT CMAKE_BUILD_EARLY_EXPANSION)
     idf_build_get_property(component_targets __COMPONENT_TARGETS)
     string(REPLACE "___idf_lvgl" "" component_targets "${component_targets}")
     idf_build_set_property(__COMPONENT_TARGETS "${component_targets}")
-    message("Component targets: ${component_targets}")
 endif()
 
 list(APPEND MICROPY_QSTRDEFS_PORT
@@ -60,7 +59,6 @@ list(APPEND MICROPY_SOURCE_DRIVERS
 list(APPEND MICROPY_SOURCE_PORT
     panichandler.c
     adc.c
-    main.c
     ppp_set_auth.c
     uart.c
     usb.c
@@ -96,6 +94,12 @@ list(APPEND MICROPY_SOURCE_PORT
 list(TRANSFORM MICROPY_SOURCE_PORT PREPEND ${MICROPY_PORT_DIR}/)
 list(APPEND MICROPY_SOURCE_PORT ${CMAKE_BINARY_DIR}/pins.c)
 
+list(APPEND MAIN_SOURCE_PORT
+    main.c
+    lvgl_port.c
+)
+list(TRANSFORM MAIN_SOURCE_PORT PREPEND ${CMAKE_CURRENT_LIST_DIR}/)
+
 list(APPEND MICROPY_SOURCE_QSTR
     ${MICROPY_SOURCE_PY}
     ${MICROPY_SOURCE_EXTMOD}
@@ -104,6 +108,8 @@ list(APPEND MICROPY_SOURCE_QSTR
     ${MICROPY_SOURCE_LIB}
     ${MICROPY_SOURCE_PORT}
     ${MICROPY_SOURCE_BOARD}
+    ${MICROPY_SOURCE_TINYUSB}
+    ${MAIN_SOURCE_PORT}
 )
 
 list(APPEND IDF_COMPONENTS
@@ -151,6 +157,7 @@ idf_component_register(
         ${MICROPY_SOURCE_DRIVERS}
         ${MICROPY_SOURCE_PORT}
         ${MICROPY_SOURCE_BOARD}
+        ${MAIN_SOURCE_PORT}
     INCLUDE_DIRS
         ${MICROPY_INC_CORE}
         ${MICROPY_INC_USERMOD}

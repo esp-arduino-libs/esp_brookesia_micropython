@@ -57,7 +57,11 @@ set(SDKCONFIG_DEFAULTS ${CMAKE_BINARY_DIR}/sdkconfig.combined)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 
 # Set the location of the main component for the project (one per target).
-list(APPEND EXTRA_COMPONENT_DIRS main_${IDF_TARGET})
+if (MAIN_VARIANT)
+    list(APPEND EXTRA_COMPONENT_DIRS main_${IDF_TARGET}_${MAIN_VARIANT})
+else()
+    list(APPEND EXTRA_COMPONENT_DIRS main_${IDF_TARGET})
+endif()
 
 # Enable the panic handler wrapper
 idf_build_set_property(LINK_OPTIONS "-Wl,--wrap=esp_panic_handler" APPEND)

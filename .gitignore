@@ -23,3 +23,8 @@ user.props
 
 # MacOS desktop metadata files
 .DS_Store
+
+# lvgl
+**/**/lv_binding_micropython/*
+lextab.py
+yacctab.py
