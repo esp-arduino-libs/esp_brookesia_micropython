@@ -28,6 +28,10 @@ else
 BUILD ?= build-$(BOARD)
 endif
 
+ifneq ($(MAIN_VARIANT),)
+BUILD := $(BUILD)-$(MAIN_VARIANT)
+endif
+
 # Device serial settings.
 PORT ?= /dev/ttyUSB0
 BAUD ?= 460800
@@ -52,6 +56,10 @@ ifdef BOARD_VARIANT
 	IDFPY_FLAGS += -D MICROPY_BOARD_VARIANT=$(BOARD_VARIANT)
 endif
 
+ifdef MAIN_VARIANT
+	IDFPY_FLAGS += -D MAIN_VARIANT=$(MAIN_VARIANT)
+endif
+
 ifdef MICROPY_PREVIEW_VERSION_2
 	IDFPY_FLAGS += -D MICROPY_PREVIEW_VERSION_2=1
 endif
@@ -63,6 +71,7 @@ define RUN_IDF_PY
 endef
 
 all:
+	echo $(IDFPY_FLAGS)
 	idf.py $(IDFPY_FLAGS) -B $(BUILD) build || (echo -e $(HELP_BUILD_ERROR); false)
 	@$(PYTHON) makeimg.py \
 		$(BUILD)/sdkconfig \

@@ -1,0 +1,29 @@
+dependencies:
+  # button:
+  #   public: true
+  #   version: '>=2.5'
+  esp_codec_dev:
+    public: true
+    version: ^1,<1.2
+  esp_lcd_ili9341: ^1
+  esp_lcd_touch_gt911:
+    version: ^1
+    public: true
+  esp_lcd_touch_tt21100:
+    version: ^1
+    public: true
+  icm42670:
+    public: true
+    version: ^1
+  idf: '>=4.4.5'
+description: Board Support Package (BSP) for ESP32-S3-BOX-3
+repository: git://github.com/espressif/esp-bsp.git
+repository_info:
+  commit_sha: 01fe06ae3a42c096721b42adcbf4741abe8e37f6
+  path: bsp/esp-box-3
+tags:
+- bsp
+targets:
+- esp32s3
+url: https://github.com/espressif/esp-bsp/tree/master/bsp/esp-box-3
+version: 1.2.0~2
