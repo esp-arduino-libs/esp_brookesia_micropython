@@ -9,3 +9,5 @@
 
 #define MICROPY_HW_I2C0_SCL                 (9)
 #define MICROPY_HW_I2C0_SDA                 (8)
+
+#define MICROPY_LV_USE_LOG                  (1)
