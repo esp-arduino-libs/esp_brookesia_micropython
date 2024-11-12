@@ -11,12 +11,12 @@
 #include "lvgl/lvgl.h"
 #include "lvgl_port.h"
 
-#define LVGL_DRAW_BUF_LINES    20 // number of display lines in each draw buffer
+#define LVGL_DRAW_BUF_LINES    50 // number of display lines in each draw buffer
 #define LVGL_TICK_PERIOD_MS    2
 #define LVGL_TASK_MAX_DELAY_MS 500
 #define LVGL_TASK_MIN_DELAY_MS 1
 #define LVGL_TASK_STACK_SIZE   (6 * 1024)
-#define LVGL_TASK_PRIORITY     2
+#define LVGL_TASK_PRIORITY     (4)
 
 static _lock_t lvgl_api_lock;
 static const char *TAG = "lvgl_port";
@@ -29,38 +29,38 @@ bool lvgl_port_notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io, esp_l
 }
 
 /* Rotate display and touch, when rotated screen in LVGL. Called when driver parameters are updated. */
-static void lvgl_port_update_callback(lv_display_t *disp)
-{
-    esp_lcd_panel_handle_t panel_handle = lv_display_get_user_data(disp);
-    lv_display_rotation_t rotation = lv_display_get_rotation(disp);
+// static void lvgl_port_update_callback(lv_display_t *disp)
+// {
+//     esp_lcd_panel_handle_t panel_handle = lv_display_get_user_data(disp);
+//     lv_display_rotation_t rotation = lv_display_get_rotation(disp);
 
-    switch (rotation) {
-    case LV_DISPLAY_ROTATION_0:
-        // Rotate LCD display
-        esp_lcd_panel_swap_xy(panel_handle, false);
-        esp_lcd_panel_mirror(panel_handle, true, false);
-        break;
-    case LV_DISPLAY_ROTATION_90:
-        // Rotate LCD display
-        esp_lcd_panel_swap_xy(panel_handle, true);
-        esp_lcd_panel_mirror(panel_handle, true, true);
-        break;
-    case LV_DISPLAY_ROTATION_180:
-        // Rotate LCD display
-        esp_lcd_panel_swap_xy(panel_handle, false);
-        esp_lcd_panel_mirror(panel_handle, false, true);
-        break;
-    case LV_DISPLAY_ROTATION_270:
-        // Rotate LCD display
-        esp_lcd_panel_swap_xy(panel_handle, true);
-        esp_lcd_panel_mirror(panel_handle, false, false);
-        break;
-    }
-}
+//     switch (rotation) {
+//     case LV_DISPLAY_ROTATION_0:
+//         // Rotate LCD display
+//         esp_lcd_panel_swap_xy(panel_handle, false);
+//         esp_lcd_panel_mirror(panel_handle, true, false);
+//         break;
+//     case LV_DISPLAY_ROTATION_90:
+//         // Rotate LCD display
+//         esp_lcd_panel_swap_xy(panel_handle, true);
+//         esp_lcd_panel_mirror(panel_handle, true, true);
+//         break;
+//     case LV_DISPLAY_ROTATION_180:
+//         // Rotate LCD display
+//         esp_lcd_panel_swap_xy(panel_handle, false);
+//         esp_lcd_panel_mirror(panel_handle, false, true);
+//         break;
+//     case LV_DISPLAY_ROTATION_270:
+//         // Rotate LCD display
+//         esp_lcd_panel_swap_xy(panel_handle, true);
+//         esp_lcd_panel_mirror(panel_handle, false, false);
+//         break;
+//     }
+// }
 
 static void lvgl_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map)
 {
-    lvgl_port_update_callback(disp);
+    // lvgl_port_update_callback(disp);
     esp_lcd_panel_handle_t panel_handle = lv_display_get_user_data(disp);
     int offsetx1 = area->x1;
     int offsetx2 = area->x2;
@@ -70,6 +70,12 @@ static void lvgl_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_t *px
     lv_draw_sw_rgb565_swap(px_map, (offsetx2 + 1 - offsetx1) * (offsety2 + 1 - offsety1));
     // copy a buffer's content to a specific area of the display
     esp_lcd_panel_draw_bitmap(panel_handle, offsetx1, offsety1, offsetx2 + 1, offsety2 + 1, px_map);
+}
+
+static void lvgl_flush_wait_cb(lv_display_t * disp)
+{
+    // wait for the flush to be ready
+    vTaskDelay(pdMS_TO_TICKS(LVGL_TASK_MIN_DELAY_MS));
 }
 
 static void lvgl_touch_cb(lv_indev_t * indev, lv_indev_data_t * data)
@@ -108,13 +114,13 @@ static MP_DEFINE_CONST_FUN_OBJ_1(mp_lv_task_handler_obj, mp_lv_task_handler);
 static void lvgl_port_task(void *arg)
 {
     printf("Starting LVGL task\n");
-    uint32_t time_till_next_ms = 5;
+    uint32_t time_till_next_ms = 10;
     // uint32_t time_threshold_ms = 1000 / CONFIG_FREERTOS_HZ;
     while (1) {
         mp_sched_schedule((mp_obj_t)&mp_lv_task_handler_obj, mp_const_none);
         // in case of triggering a task watch dog time out
         // time_till_next_ms = MAX(time_till_next_ms, time_threshold_ms);
-        usleep(1000 * time_till_next_ms);
+        vTaskDelay(pdMS_TO_TICKS(time_till_next_ms));
     }
 }
 
@@ -142,6 +148,7 @@ lv_display_t *lvgl_port_init(int h_res, int v_res, esp_lcd_panel_handle_t panel_
     lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB565);
     // set the callback which can copy the rendered image to an area of the display
     lv_display_set_flush_cb(display, lvgl_flush_cb);
+    lv_display_set_flush_wait_cb(display, lvgl_flush_wait_cb);
 
     printf("Install LVGL tick timer\n");
     // Tick interface for LVGL (using esp_timer to generate 2ms periodic event)

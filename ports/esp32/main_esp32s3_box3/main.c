@@ -74,7 +74,7 @@
 #include "lvgl_port.h"
 
 // MicroPython runs as a task under FreeRTOS
-#define MP_TASK_PRIORITY        (ESP_TASK_PRIO_MIN + 1)
+#define MP_TASK_PRIORITY        (ESP_TASK_PRIO_MIN + 5)
 
 // Set the margin for detecting stack overflow, depending on the CPU architecture.
 #if CONFIG_IDF_TARGET_ESP32C3
@@ -145,8 +145,6 @@ soft_reset:
     machine_i2s_init0();
     #endif
 
-    init_lvgl_port();
-
     // run boot-up scripts
     pyexec_frozen_module("_boot.py", false);
     int ret = pyexec_file_if_exists("boot.py");
@@ -159,6 +157,8 @@ soft_reset:
             goto soft_reset_exit;
         }
     }
+
+    init_lvgl_port();
 
     for (;;) {
         if (pyexec_mode_kind == PYEXEC_MODE_RAW_REPL) {

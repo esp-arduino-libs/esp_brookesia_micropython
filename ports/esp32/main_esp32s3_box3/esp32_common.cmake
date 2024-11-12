@@ -170,6 +170,8 @@ idf_component_register(
         ${IDF_COMPONENTS}
 )
 
+fatfs_create_rawflash_image(vfs ./scripts FLASH_IN_PROJECT)
+
 # Set the MicroPython target as the current (main) IDF component target.
 set(MICROPY_TARGET ${COMPONENT_TARGET})
 
