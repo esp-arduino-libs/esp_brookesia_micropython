@@ -21,10 +21,6 @@ if(NOT CMAKE_BUILD_EARLY_EXPANSION)
 
     include(${MICROPY_DIR}/py/usermod.cmake)
     include(${MICROPY_DIR}/extmod/extmod.cmake)
-
-    idf_build_get_property(component_targets __COMPONENT_TARGETS)
-    string(REPLACE "___idf_lvgl" "" component_targets "${component_targets}")
-    idf_build_set_property(__COMPONENT_TARGETS "${component_targets}")
 endif()
 
 list(APPEND MICROPY_QSTRDEFS_PORT
