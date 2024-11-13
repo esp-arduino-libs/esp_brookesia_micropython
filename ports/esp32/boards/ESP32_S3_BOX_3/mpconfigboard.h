@@ -11,4 +11,4 @@
 #define MICROPY_HW_I2C0_SDA                 (8)
 
 #define MICROPY_LV_USE_LOG                  (0)
-#define MICROPY_TASK_STACK_SIZE             (50 * 1024)
+#define MICROPY_GC_INITIAL_HEAP_SIZE        (1024 * 1024)

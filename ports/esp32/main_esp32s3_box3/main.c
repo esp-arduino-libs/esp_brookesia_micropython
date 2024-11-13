@@ -105,9 +105,9 @@ void mp_task(void *pvParameter) {
     mp_thread_init(pxTaskGetStackStart(NULL), MICROPY_TASK_STACK_SIZE / sizeof(uintptr_t));
     #endif
     #if CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG
-    // usb_serial_jtag_init();
+    usb_serial_jtag_init();
     #elif CONFIG_USB_OTG_SUPPORTED
-    // usb_init();
+    usb_init();
     #endif
     #if MICROPY_HW_ENABLE_UART_REPL
     uart_stdout_init();
@@ -262,6 +262,12 @@ MP_REGISTER_ROOT_POINTER(mp_obj_t native_code_pointers);
 
 static void init_lvgl_port()
 {
+    static bool is_initialized = false;
+
+    if (is_initialized) {
+        return;
+    }
+
     printf("Turn off LCD backlight\n");
     bsp_display_brightness_init();
     bsp_display_backlight_off();
@@ -293,4 +299,6 @@ static void init_lvgl_port()
     };
     /* Register done callback */
     ESP_ERROR_CHECK(esp_lcd_panel_io_register_event_callbacks(io_handle, &cbs, disp));
+
+    is_initialized = true;
 }
