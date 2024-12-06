@@ -71,3 +71,6 @@
 [submodule "modules/lv_binding_micropython"]
 	path = modules/lv_binding_micropython
 	url = git@github.com:esp-arduino-libs/lv_binding_micropython.git
+[submodule "modules/esp-lib-utils"]
+	path = modules/esp-lib-utils
+	url = https://github.com/esp-arduino-libs/esp-lib-utils.git

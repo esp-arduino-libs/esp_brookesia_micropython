@@ -28,3 +28,5 @@ user.props
 **/**/lv_binding_micropython/*
 lextab.py
 yacctab.py
+
+.vscode/

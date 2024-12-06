@@ -8,3 +8,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/lv_binding_micropython/micropython.cmake)
 if(ESP_PLATFORM)
     include(${CMAKE_CURRENT_LIST_DIR}/esp_memory/micropython.cmake)
 endif()
+
+if(ESP_PLATFORM)
+    include(${CMAKE_CURRENT_LIST_DIR}/esp-lib-utils/micropython.cmake)
+endif()
