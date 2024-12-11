@@ -119,6 +119,7 @@ list(APPEND IDF_COMPONENTS
     esp_eth
     esp_event
     esp_hw_support
+    esp_lcd
     esp_netif
     esp_partition
     esp_pm

@@ -2,8 +2,8 @@
 dependencies:
   espressif/mdns: "~1.1.0"
   espressif/esp_tinyusb: "~1.0.0"
-  espressif/esp-box-3:
-    version: "*"
-    override_path: "./esp-box-3"
+  # espressif/esp-box-3:
+  #   version: "*"
+  #   override_path: "./esp-box-3"
   idf:
     version: ">=5.0.4"

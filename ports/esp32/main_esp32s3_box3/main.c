@@ -68,10 +68,10 @@
 #include "modespnow.h"
 #endif
 
-#include "bsp/display.h"
-#include "bsp/touch.h"
-#include "bsp/esp-bsp.h"
-#include "lvgl_port.h"
+// #include "bsp/display.h"
+// #include "bsp/touch.h"
+// #include "bsp/esp-bsp.h"
+// #include "lvgl_port.h"
 
 // MicroPython runs as a task under FreeRTOS
 #define MP_TASK_PRIORITY        (ESP_TASK_PRIO_MIN + 5)
@@ -83,7 +83,7 @@
 #define MP_TASK_STACK_LIMIT_MARGIN (1024)
 #endif
 
-static void init_lvgl_port();
+// static void init_lvgl_port();
 
 int vprintf_null(const char *format, va_list ap) {
     // do nothing: this is used as a log target during raw repl mode
@@ -158,7 +158,7 @@ soft_reset:
         }
     }
 
-    init_lvgl_port();
+    // init_lvgl_port();
 
     for (;;) {
         if (pyexec_mode_kind == PYEXEC_MODE_RAW_REPL) {
@@ -260,45 +260,45 @@ void *esp_native_code_commit(void *buf, size_t len, void *reloc) {
 
 MP_REGISTER_ROOT_POINTER(mp_obj_t native_code_pointers);
 
-static void init_lvgl_port()
-{
-    static bool is_initialized = false;
+// static void init_lvgl_port()
+// {
+//     static bool is_initialized = false;
 
-    if (is_initialized) {
-        return;
-    }
+//     if (is_initialized) {
+//         return;
+//     }
 
-    printf("Turn off LCD backlight\n");
-    bsp_display_brightness_init();
-    bsp_display_backlight_off();
+//     printf("Turn off LCD backlight\n");
+//     bsp_display_brightness_init();
+//     bsp_display_backlight_off();
 
-    printf("Initialize LCD\n");
-    bsp_display_config_t display_cfg = {
-        .max_transfer_sz = 320 * 240 * 2,
-    };
-    esp_lcd_panel_handle_t panel_handle = NULL;
-    esp_lcd_panel_io_handle_t io_handle = NULL;
-    bsp_display_new(&display_cfg, &panel_handle, &io_handle);
+//     printf("Initialize LCD\n");
+//     bsp_display_config_t display_cfg = {
+//         .max_transfer_sz = 320 * 240 * 2,
+//     };
+//     esp_lcd_panel_handle_t panel_handle = NULL;
+//     esp_lcd_panel_io_handle_t io_handle = NULL;
+//     bsp_display_new(&display_cfg, &panel_handle, &io_handle);
 
-    printf("Turn on LCD backlight\n");
-    bsp_display_backlight_on();
+//     printf("Turn on LCD backlight\n");
+//     bsp_display_backlight_on();
 
-    printf("Initialize touch\n");
-    bsp_i2c_init();
-    bsp_touch_config_t touch_cfg = {
-        .dummy = NULL,
-    };
-    esp_lcd_touch_handle_t tp_handle = NULL;
-    bsp_touch_new(&touch_cfg, &tp_handle);
+//     printf("Initialize touch\n");
+//     bsp_i2c_init();
+//     bsp_touch_config_t touch_cfg = {
+//         .dummy = NULL,
+//     };
+//     esp_lcd_touch_handle_t tp_handle = NULL;
+//     bsp_touch_new(&touch_cfg, &tp_handle);
 
-    lv_display_t *disp = lvgl_port_init(BSP_LCD_H_RES, BSP_LCD_V_RES, panel_handle, tp_handle);
+//     lv_display_t *disp = lvgl_port_init(BSP_LCD_H_RES, BSP_LCD_V_RES, panel_handle, tp_handle);
 
-    printf("Register io panel event callback for LVGL flush ready notification\n");
-    const esp_lcd_panel_io_callbacks_t cbs = {
-        .on_color_trans_done = lvgl_port_notify_lvgl_flush_ready,
-    };
-    /* Register done callback */
-    ESP_ERROR_CHECK(esp_lcd_panel_io_register_event_callbacks(io_handle, &cbs, disp));
+//     printf("Register io panel event callback for LVGL flush ready notification\n");
+//     const esp_lcd_panel_io_callbacks_t cbs = {
+//         .on_color_trans_done = lvgl_port_notify_lvgl_flush_ready,
+//     };
+//     /* Register done callback */
+//     ESP_ERROR_CHECK(esp_lcd_panel_io_register_event_callbacks(io_handle, &cbs, disp));
 
-    is_initialized = true;
-}
+//     is_initialized = true;
+// }

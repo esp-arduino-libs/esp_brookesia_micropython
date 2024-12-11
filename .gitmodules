@@ -77,3 +77,6 @@
 [submodule "modules/ESP32_IO_Expander"]
 	path = modules/ESP32_IO_Expander
 	url = https://github.com/esp-arduino-libs/ESP32_IO_Expander.git
+[submodule "modules/ESP32_Display_Panel"]
+	path = modules/ESP32_Display_Panel
+	url = ssh://git@gitlab.espressif.cn:27227/ae_group/ESP32_Display_Panel.git
