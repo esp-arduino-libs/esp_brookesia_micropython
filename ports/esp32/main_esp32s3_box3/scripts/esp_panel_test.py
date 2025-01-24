@@ -9,10 +9,11 @@ for i in range(100):
 
     b = panel.Board()
 
-    b.init()
     b.begin()
     b.color_bar_test()
     b.deinit()
+
+    utils.mem_info()
 
     gc.collect()
     mpy.mem_info()

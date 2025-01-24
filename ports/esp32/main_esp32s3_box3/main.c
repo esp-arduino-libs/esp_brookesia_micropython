@@ -68,6 +68,8 @@
 #include "modespnow.h"
 #endif
 
+#include "esp_lib_utils.h"
+
 // #include "bsp/display.h"
 // #include "bsp/touch.h"
 // #include "bsp/esp-bsp.h"
@@ -138,6 +140,8 @@ soft_reset:
     readline_init0();
 
     MP_STATE_PORT(native_code_pointers) = MP_OBJ_NULL;
+
+    esp_utils_mem_gen_enable_alloc(true);
 
     // initialise peripherals
     machine_pins_init();
